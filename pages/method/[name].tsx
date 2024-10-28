@@ -4,7 +4,7 @@ import useRootStore from "@/store";
 export default function Page() {
   const router = useRouter();
   const store = useRootStore();
-  const method = store.methods.find((item) => item.id === router.query.id);
+  const method = store.methods.find((item) => item.name === router.query.name);
 
   if (!method) {
     return <div>Method not found</div>;
