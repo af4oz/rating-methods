@@ -20,7 +20,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - Save Ratings/Methods with unique names
 - Add creation & modification datetime
-- ??
+- Display Ratings using particular method on method/[id] pages
+- Improve id counters(eg: counters can only be modified from within store and not from everywhere else)
 
 ## Learn More
 
