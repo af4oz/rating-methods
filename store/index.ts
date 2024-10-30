@@ -92,43 +92,6 @@ const useRootStore = create<RootState>()(
         );
         return state;
       }),
-    // draftMethod: {
-    //   name: "Untited",
-    //   criteria: [
-    //     {
-    //       name: "Default",
-    //       weight: 100,
-    //     },
-    //   ],
-    // },
-    // updateDraftMethodCriterion: (criterion) =>
-    //   set((state) => {
-    //     if (typeof state.draftMethod !== "undefined") {
-    //       return {
-    //         draftMethod: {
-    //           ...state.draftMethod,
-    //           criteria: state.draftMethod?.criteria.map((item) =>
-    //             item.name === criterion.name ? { ...item, ...criterion } : item
-    //           ),
-    //         },
-    //       };
-    //     } else {
-    //       return state;
-    //     }
-    //   }),
-    // updateDraftName: (name) => {
-    //   set((state) => {
-    //     if (typeof state.draft !== "undefined") {
-    //       return { draft: { ...state.draft, name } };
-    //     } else {
-    //       return state;
-    //     }
-    //   });
-    // },
-    // saveDraftMethod: (method) =>
-    //   set((state) => {
-    //     return { methods: [...state.methods, method] };
-    //   }),
   }))
 );
 
