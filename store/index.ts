@@ -85,12 +85,47 @@ const useRootStore = create<RootState>()(
       }),
     saveToLocalStorage: () =>
       set((state) => {
-        const { methods, ratings } = state;
-        localStorage.setItem(
-          LocalStorageKey,
-          JSON.stringify({ methods, ratings })
-        );
-        return state;
+        try {
+          const {
+            methods = [],
+            ratings = [],
+            methodCounter = 0,
+            ratingCounter = 0,
+          } = JSON.parse(
+            localStorage.getItem(LocalStorageKey) as string
+          ) as Partial<RootState>;
+
+          // Merge
+          state.methods.forEach((target, index) => {
+            const idx = methods.findIndex((item) => item.id === target.id);
+            if (idx >= 0) {
+              methods[idx] = target;
+            } else {
+              methods.push(target);
+            }
+          });
+          state.ratings.forEach((target, index) => {
+            const idx = ratings.findIndex((item) => item.id === target.id);
+            if (idx >= 0) {
+              ratings[idx] = target;
+            } else {
+              ratings.push(target);
+            }
+          });
+
+          localStorage.setItem(
+            LocalStorageKey,
+            JSON.stringify({
+              methods,
+              ratings,
+              ratingCounter: Math.max(state.ratingCounter, ratingCounter),
+              methodCounter: Math.max(state.methodCounter, methodCounter),
+            })
+          );
+          return state;
+        } catch (error) {
+          return state;
+        }
       }),
   }))
 );

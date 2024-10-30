@@ -2,25 +2,25 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/Layout";
 import { useEffect } from "react";
-import useStore from "@/store";
-import { LocalStorageKey } from "@/constants";
+import useRootStore from "@/store";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const store = useStore();
+  const saveToLocalStorage = useRootStore((state) => state.saveToLocalStorage);
+  const restoreFromLocalStorage = useRootStore(
+    (state) => state.restoreFromLocalStorage
+  );
+
   useEffect(() => {
-    // Function to save data to localStorage
-    const saveDataToLocalStorage = () => {
-      localStorage.setItem(LocalStorageKey, JSON.stringify(store.methods));
-    };
+    restoreFromLocalStorage();
 
     // Attach the save function to the beforeunload event
-    window.addEventListener("beforeunload", saveDataToLocalStorage);
+    window.addEventListener("beforeunload", saveToLocalStorage);
 
     // Cleanup on unmount
     return () => {
-      window.removeEventListener("beforeunload", saveDataToLocalStorage);
+      window.removeEventListener("beforeunload", saveToLocalStorage);
     };
-  });
+  }, []);
   return (
     <Layout>
       <Component {...pageProps} />

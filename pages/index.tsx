@@ -1,14 +1,15 @@
 import useRootStore from "@/store";
 import Link from "next/link";
-import { useEffect } from "react";
 
 export default function Home() {
-  const store = useRootStore();
+  const methods = useRootStore((state) => state.methods);
+  const ratings = useRootStore((state) => state.ratings);
+  const reset = useRootStore((state) => state.reset);
 
-  const reset = () => {
+  const handleReset = () => {
     // TODO: show a confirmation dialog
 
-    store.reset();
+    reset();
   };
 
   return (
@@ -20,7 +21,10 @@ export default function Home() {
         <Link href="/rating/new" className="btn-primary mr-4">
           + New rating
         </Link>
-        <button onClick={reset} className="btn bg-red-700 hover:bg-red-600">
+        <button
+          onClick={handleReset}
+          className="btn bg-red-700 hover:bg-red-600"
+        >
           Reset
         </button>
         <h2 className="mt-4">Rating methods created</h2>
@@ -31,8 +35,8 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {store.methods?.length > 0
-              ? store.methods.map((item) => {
+            {methods?.length > 0
+              ? methods.map((item) => {
                   return (
                     <tr className="border-b-1" key={item.id}>
                       <td>
@@ -52,8 +56,8 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            {store.ratings?.length > 0
-              ? store.ratings.map((item) => {
+            {ratings?.length > 0
+              ? ratings.map((item) => {
                   return (
                     <tr className="border-b-1" key={item.id}>
                       <td>
