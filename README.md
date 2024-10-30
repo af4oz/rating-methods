@@ -16,13 +16,16 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## TODO Items
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [ ] Name input functionality, let users save Ratings/Methods with unique names
+- [ ] When applying method to a rating, remove "addCriterion" button
+- [ ] Add creation & modification datetime
+- [ ] Display Ratings using particular method on method/[id] pages
+- [ ] Improve id counters
+  - counters can only be modified from within store and not from everywhere else,
+  - two counters(ratingCounter,methodCounter) are hard to manage
+- [ ] Improve responsiveness
 
 ## Learn More
 

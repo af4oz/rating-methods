@@ -2,35 +2,28 @@ import useRootStore from "@/store";
 import { idEqual } from "@/utils/common";
 import { useRouter } from "next/router";
 
-export default function ViewMethod() {
+export default function ViewRating() {
   const router = useRouter();
-  const method = useRootStore((state) =>
-    state.methods.find((item) => idEqual(item.id, router.query.id as string))
+  const rating = useRootStore((state) =>
+    state.ratings.find((item) => idEqual(item.id, router.query.id as string))
   );
-  if (!method) {
-    return <div>Invalid method id: {String(router.query.id)}</div>;
+  if (!rating) {
+    return <div>Invalid rating id: {String(router.query.id)}</div>;
   }
 
   const handleEdit = () => {
-    router.push(`/method/edit/${method.id}`);
+    router.push(`/rating/edit/${rating.id}`);
   };
 
   const handleFork = () => {
-    router.push(`/method/new?forkMethodId=${method.id}`);
-  };
-
-  const handleApply = () => {
-    router.push(`/rating/new?applyMethodId=${method.id}`);
+    router.push(`/rating/new?forkRatingId=${rating.id}`);
   };
 
   return (
     <div>
       <div className="flex justify-between">
-        <h1 className="h1">Rating Method Name: {method.name}</h1>
+        <h1 className="h1">Rating Name: {rating.name}</h1>
         <div>
-          <button className="btn-primary mr-4 mb-2" onClick={handleApply}>
-            Apply
-          </button>
           <button className="btn-primary mr-4 mb-2" onClick={handleEdit}>
             Edit 📝
           </button>
@@ -48,17 +41,28 @@ export default function ViewMethod() {
             <th align="left" className="pr-4 py-2">
               Weight
             </th>
+            <th align="left" className="pr-4 py-2">
+              Rating
+            </th>
           </tr>
         </thead>
         <tbody>
-          {method.criteria.map((item) => (
+          {rating.criteria.map((item) => (
             <tr key={item.id} className="p-2 my-2">
               <td className="pr-4 py-2">{item.name}</td>
               <td className="pr-4 py-2">{item.weight}</td>
+              <td className="pr-4 py-2">{item.value}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      <br />
+      <br />
+      {rating.finalRating ? (
+        <div>
+          <b>Final Rating: </b> {rating.finalRating}
+        </div>
+      ) : null}
     </div>
   );
 }
