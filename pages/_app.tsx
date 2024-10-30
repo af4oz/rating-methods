@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
     return () => {
       window.removeEventListener("beforeunload", saveToLocalStorage);
     };
-  }, []);
+  }, [restoreFromLocalStorage, saveToLocalStorage]);
   return (
     <Layout>
       <Component {...pageProps} />
