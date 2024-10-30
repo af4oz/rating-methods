@@ -27,7 +27,7 @@ export default function Home() {
         >
           Reset
         </button>
-        <h2 className="h1 mt-2">Rating methods created</h2>
+        <h2 className="h1 mt-2">Rating methods</h2>
         <table className="w-full">
           <thead className="border-b-2 border-gray-600 font-bold">
             <tr className="text-left">
