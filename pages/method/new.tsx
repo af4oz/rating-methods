@@ -86,13 +86,17 @@ export default function NewMethod() {
 
   return (
     <div>
-      <h1 className="py-4">{method.name}</h1>
+      <h1 className="h1">{method.name}</h1>
       {error && <div className="text-red-600">Error: {error}</div>}
       <table>
         <thead>
           <tr>
-            <th align="left">Criterion name</th>
-            <th align="left">Weight</th>
+            <th align="left" className="pr-4 py-2">
+              Criterion name
+            </th>
+            <th align="left" className="pr-4 py-2">
+              Weight
+            </th>
             <th></th>
           </tr>
         </thead>

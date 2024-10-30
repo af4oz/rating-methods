@@ -27,3 +27,7 @@ export function hasValidWeights(criteria: T_Criterion[]): boolean {
     100.0
   );
 }
+
+export function idEqual(id1: string | number, id2: string | number) {
+  return String(id1) === String(id2);
+}

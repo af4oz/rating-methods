@@ -114,15 +114,21 @@ export default function NewRating() {
   };
 
   return (
-    <div suppressHydrationWarning={true}>
-      <h1 className="py-4">{rating.name}</h1>
+    <div>
+      <h1 className="h1">{rating.name}</h1>
       {error && <div className="text-red-600">Error: {error}</div>}
       <table>
         <thead>
           <tr>
-            <th align="left">Criterion name</th>
-            <th align="left">Weight</th>
-            <th align="left">Rating</th>
+            <th align="left" className="pr-4 py-2">
+              Criterion name
+            </th>
+            <th align="left" className="pr-4 py-2">
+              Weight
+            </th>
+            <th align="left" className="pr-4 py-2">
+              Rating
+            </th>
             <th></th>
           </tr>
         </thead>

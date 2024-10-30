@@ -29,6 +29,15 @@ input {
     @apply border-white border rounded px-4 py-2
   }
   .btn-primary {
-    @apply btn bg-green-600 shadow-md hover:active:bg-green-500
+    @apply btn bg-green-700 shadow-md hover:bg-green-600
+  }
+  .h1 {
+    @apply py-2 font-bold text-xl
+  }
+  .h2 {
+    @apply py-2 font-bold text-lg
+  }
+  .h3 {
+    @apply py-2 font-bold text-md
   }
 }

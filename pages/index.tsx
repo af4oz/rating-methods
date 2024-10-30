@@ -27,10 +27,11 @@ export default function Home() {
         >
           Reset
         </button>
-        <h2 className="mt-4">Rating methods created</h2>
+        <h2 className="h1 mt-2">Rating methods created</h2>
         <table className="w-full">
-          <thead className="border-b-2 font-bold">
+          <thead className="border-b-2 border-gray-600 font-bold">
             <tr className="text-left">
+              <th>id</th>
               <th>Name</th>
             </tr>
           </thead>
@@ -38,7 +39,8 @@ export default function Home() {
             {methods?.length > 0
               ? methods.map((item) => {
                   return (
-                    <tr className="border-b-1" key={item.id}>
+                    <tr className="border-b-1 border-gray-600" key={item.id}>
+                      <td>{item.id}</td>
                       <td>
                         <Link href={`/method/${item.id}`}>{item.name}</Link>
                       </td>
@@ -48,10 +50,11 @@ export default function Home() {
               : null}
           </tbody>
         </table>
-        <h2 className="mt-4">Ratings</h2>
+        <h2 className="h1 mt-2">Ratings</h2>
         <table className="w-full">
-          <thead className="border-b-2 font-bold">
+          <thead className="border-b-2 border-gray-600 font-bold">
             <tr className="text-left">
+              <th>id</th>
               <th>Name</th>
             </tr>
           </thead>
@@ -59,7 +62,8 @@ export default function Home() {
             {ratings?.length > 0
               ? ratings.map((item) => {
                   return (
-                    <tr className="border-b-1" key={item.id}>
+                    <tr className="border-b-1 border-gray-600" key={item.id}>
+                      <td>{item.id}</td>
                       <td>
                         <Link href={`/rating/${item.id}`}>{item.name}</Link>
                       </td>
