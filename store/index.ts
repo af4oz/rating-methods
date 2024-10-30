@@ -1,5 +1,6 @@
 import { LocalStorageKey } from "@/constants";
 import { T_Rating, T_RatingMethod } from "@/types";
+import { idEqual } from "@/utils/common";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -8,10 +9,15 @@ interface RootState {
   ratings: T_Rating[];
   // Below counters are used in id generation for `methods` & `ratings`
   // TODO: find a better solution
+  /** Counter value increases by one for each successfull store.saveRating call */
   ratingCounter: number;
+  /** Counter value increases by one for each successfull store.saveMethod call */
   methodCounter: number;
-  editMethod: (name: string, data: T_RatingMethod) => void;
-  editRating: (name: string, data: T_Rating) => void;
+  editMethod: (
+    id: T_RatingMethod["id"],
+    data: Omit<T_RatingMethod, "id">
+  ) => void;
+  editRating: (id: T_Rating["id"], data: Omit<T_Rating, "id">) => void;
   saveMethod: (data: T_RatingMethod) => void;
   saveRating: (data: T_Rating) => void;
   reset: () => void;
@@ -28,19 +34,19 @@ const useRootStore = create<RootState>()(
     ratings: [],
     methodCounter: 0,
     ratingCounter: 0,
-    editMethod: (name, data) =>
+    editMethod: (id, data) =>
       set((state) => {
         return {
           methods: state.methods.map((item) =>
-            item.name == name ? { ...item, ...data } : item
+            idEqual(item.id, id) ? { ...item, ...data } : item
           ),
         };
       }),
-    editRating: (name, data) =>
+    editRating: (id, data) =>
       set((state) => {
         return {
           ratings: state.ratings.map((item) =>
-            item.name == name ? { ...item, ...data } : item
+            idEqual(item.id, id) ? { ...item, ...data } : item
           ),
         };
       }),

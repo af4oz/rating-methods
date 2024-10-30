@@ -9,7 +9,10 @@ export interface T_Rating {
   name: string;
   criteria: T_CriterionWithValue[];
   finalRating?: number;
-  methodName?: string;
+  method?: {
+    id: T_RatingMethod["id"];
+    name: string;
+  };
 }
 
 export interface T_CriterionWithValue extends T_Criterion {
@@ -33,4 +36,10 @@ export interface CriterionProps<
     criterion: Type extends "withValue" ? T_CriterionWithValue : T_Criterion
   ) => void;
   onDelete: (criterion: Omit<T_Criterion, "weight">) => void;
+}
+
+export interface CreateRatingProps {
+  applyMethodId?: T_RatingMethod["id"];
+  forkRatingId?: T_Rating["id"];
+  editRatingId?: T_Rating["id"];
 }
