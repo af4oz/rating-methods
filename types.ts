@@ -1,9 +1,11 @@
 export interface T_RatingMethod {
+  id: number;
   name: string;
   criteria: T_Criterion[];
 }
 
 export interface T_Rating {
+  id: number;
   name: string;
   criteria: T_CriterionWithValue[];
   finalRating?: number;
@@ -15,6 +17,7 @@ export interface T_CriterionWithValue extends T_Criterion {
 }
 
 export interface T_Criterion {
+  id: string;
   name: string;
   weight: number;
 }
@@ -29,4 +32,5 @@ export interface CriterionProps<
   onChange: (
     criterion: Type extends "withValue" ? T_CriterionWithValue : T_Criterion
   ) => void;
+  onDelete: (criterion: Omit<T_Criterion, "weight">) => void;
 }

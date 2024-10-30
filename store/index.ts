@@ -5,6 +5,10 @@ import { create } from "zustand";
 interface RootState {
   methods: T_RatingMethod[];
   ratings: T_Rating[];
+  // Below counters are used in id generation for `methods` & `ratings`
+  // TODO: find a better solution
+  ratingCounter: number;
+  methodCounter: number;
   editMethod: (name: string, data: T_RatingMethod) => void;
   editRating: (name: string, data: T_Rating) => void;
   saveMethod: (data: T_RatingMethod) => void;
@@ -20,6 +24,8 @@ interface RootState {
 const useRootStore = create<RootState>((set) => ({
   methods: [],
   ratings: [],
+  methodCounter: 0,
+  ratingCounter: 0,
   editMethod: (name, data) =>
     set((state) => {
       return {
@@ -40,6 +46,8 @@ const useRootStore = create<RootState>((set) => ({
     set((state) => {
       return {
         methods: [...state.methods, data],
+        // Increment the counter (used for id genration)
+        methodCounter: state.methodCounter + 1,
       };
     });
   },
@@ -47,6 +55,8 @@ const useRootStore = create<RootState>((set) => ({
     set((state) => {
       return {
         ratings: [...state.ratings, data],
+        // Increment the counter (used for id genration)
+        ratingCounter: state.ratingCounter + 1,
       };
     });
   },
@@ -62,11 +72,10 @@ const useRootStore = create<RootState>((set) => ({
         if (!dataString) {
           return state;
         }
-        const { methods, ratings } = JSON.parse(dataString) as {
-          methods: T_RatingMethod[];
-          ratings: T_Rating[];
-        };
-        return { methods, ratings };
+        const { methods, ratings, ratingCounter, methodCounter } = JSON.parse(
+          dataString
+        ) as Partial<RootState>;
+        return { methods, ratings, ratingCounter, methodCounter };
       } catch (error) {
         console.error("Error while restoring from Local storage");
         return state;

@@ -1,34 +1,28 @@
-import useStore from "@/store";
+import useRootStore from "@/store";
 import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Home() {
-  const store = useStore();
+  const store = useRootStore();
 
-  useEffect(() => {
-    // Check if window is defined to make sure this code only runs on the client side
-    if (typeof window !== "undefined") {
-      // Get item from localStorage
-      store.restoreFromLocalStorage();
-    }
-  }, []);
+  const reset = () => {
+    // TODO: show a confirmation dialog
+
+    store.reset();
+  };
 
   return (
     <div>
-      <h1 className="text-center py-4">Rating methods</h1>
       <main className="p-4">
-        <Link
-          href="/method/new"
-          className="border-white border rounded px-2 py-4 bg-green-600 shadow-md hover:active:bg-green-500"
-        >
+        <Link href="/method/new" className="btn-primary mr-4">
           + New rating method
         </Link>
-        <Link
-          href="/rating/new"
-          className="border-white border rounded px-2 py-4 bg-green-600 shadow-md hover:active:bg-green-500"
-        >
+        <Link href="/rating/new" className="btn-primary mr-4">
           + New rating
         </Link>
+        <button onClick={reset} className="btn bg-red-700 hover:bg-red-600">
+          Reset
+        </button>
         <h2 className="mt-4">Rating methods created</h2>
         <table className="w-full">
           <thead className="border-b-2 font-bold">
@@ -37,11 +31,17 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b-1">
-              <td>
-                <Link href={`/method/${1}`}>Nww</Link>
-              </td>
-            </tr>
+            {store.methods?.length > 0
+              ? store.methods.map((item) => {
+                  return (
+                    <tr className="border-b-1" key={item.id}>
+                      <td>
+                        <Link href={`/method/${item.id}`}>{item.name}</Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              : null}
           </tbody>
         </table>
         <h2 className="mt-4">Ratings</h2>
@@ -52,11 +52,17 @@ export default function Home() {
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b-1">
-              <td>
-                <Link href={`/rating/${1}`}>Nww</Link>
-              </td>
-            </tr>
+            {store.ratings?.length > 0
+              ? store.ratings.map((item) => {
+                  return (
+                    <tr className="border-b-1" key={item.id}>
+                      <td>
+                        <Link href={`/rating/${item.id}`}>{item.name}</Link>
+                      </td>
+                    </tr>
+                  );
+                })
+              : null}
           </tbody>
         </table>
       </main>

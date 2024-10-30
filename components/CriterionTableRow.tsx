@@ -4,22 +4,36 @@ import { ChangeEventHandler } from "react";
 export default function CriterionTableRow<Type extends "withValue" | undefined>(
   props: CriterionProps<Type>
 ) {
-  const id = `criterion-${props.criterion.name}`;
-  const idForWeightInput = id + "-weight";
+  const { criterion } = props;
+  const idForWeightInput = criterion.id + "-weight";
+  const idForNameInput = criterion.id + "-name";
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     const updatedCriterion = {
-      ...props.criterion,
+      ...criterion,
       [e.target.name]: e.target.value,
     };
     props.onChange(updatedCriterion);
   };
+
+  const handleDelete = () => {
+    props.onDelete(criterion);
+  };
   return (
     <tr className="p-2 my-2">
-      <td>
-        <label htmlFor={id}>{props.criterion.name}</label>
+      <td className="pr-4 py-2">
+        <input
+          id={idForNameInput}
+          type="text"
+          name="name"
+          min={1}
+          max={120}
+          value={criterion.name}
+          onInput={onChange}
+        ></input>
+        {/* <label htmlFor={id}>{props.criterion.name}</label> */}
       </td>
-      <td>
+      <td className="pr-4 py-2">
         <input
           type="number"
           id={idForWeightInput}
@@ -28,21 +42,21 @@ export default function CriterionTableRow<Type extends "withValue" | undefined>(
           placeholder="0"
           max={100}
           step={1}
-          value={props.criterion.weight}
+          value={criterion.weight}
           onInput={onChange}
           // disabled={!editable}
         />
       </td>
       {props.type === "withValue" ? (
-        <td>
+        <td className="pr-4 py-2">
           {/* TODO: Add tick names */}
           <input
             type="range"
-            id={id}
+            id={criterion.id + "-value"}
             name="value"
             min="0"
             max={10}
-            value={(props.criterion as T_CriterionWithValue).value}
+            value={(criterion as T_CriterionWithValue).value}
             step={1}
             onChange={onChange}
             list="markers"
@@ -50,6 +64,9 @@ export default function CriterionTableRow<Type extends "withValue" | undefined>(
           />
         </td>
       ) : null}
+      <td className="pr-4 py-2">
+        <button onClick={handleDelete}>❌</button>
+      </td>
     </tr>
   );
 }
