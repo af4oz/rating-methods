@@ -42,7 +42,9 @@ export default function Home() {
                     <tr className="border-b-1 border-gray-600" key={item.id}>
                       <td>{item.id}</td>
                       <td>
-                        <Link href={`/method/${item.id}`}>{item.name}</Link>
+                        <Link className="link" href={`/method/${item.id}`}>
+                          {item.name}
+                        </Link>
                       </td>
                     </tr>
                   );
@@ -65,7 +67,9 @@ export default function Home() {
                     <tr className="border-b-1 border-gray-600" key={item.id}>
                       <td>{item.id}</td>
                       <td>
-                        <Link href={`/rating/${item.id}`}>{item.name}</Link>
+                        <Link className="link" href={`/rating/${item.id}`}>
+                          {item.name}
+                        </Link>
                       </td>
                     </tr>
                   );

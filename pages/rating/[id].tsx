@@ -24,10 +24,10 @@ export default function ViewRating() {
       <div className="flex justify-between">
         <h1 className="h1">Rating Name: {rating.name}</h1>
         <div>
-          <button className="btn-primary mr-4" onClick={handleEdit}>
+          <button className="btn-primary mr-4 mb-2" onClick={handleEdit}>
             Edit 📝
           </button>
-          <button className="btn-primary" onClick={handleFork}>
+          <button className="btn-primary mb-2" onClick={handleFork}>
             Fork
           </button>
         </div>
