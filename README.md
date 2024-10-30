@@ -20,8 +20,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - [ ] Name input functionality, let users save Ratings/Methods with unique names
 - [ ] When applying method to a rating, remove "addCriterion" button
-- [ ] Add creation & modification datetime
+- [ ] Add ErrorBoundary 
 - [ ] Display Ratings using particular method on method/[id] pages
+- [ ] Add creation & modification datetime
 - [ ] Improve id counters
   - counters can only be modified from within store and not from everywhere else,
   - two counters(ratingCounter,methodCounter) are hard to manage
