@@ -1,6 +1,7 @@
 import { LocalStorageKey } from "@/constants";
 import { T_Rating, T_RatingMethod } from "@/types";
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
 interface RootState {
   methods: T_RatingMethod[];
@@ -21,112 +22,114 @@ interface RootState {
   // saveDraftMethod: (method: T_RatingMethod) => void;
 }
 
-const useRootStore = create<RootState>((set) => ({
-  methods: [],
-  ratings: [],
-  methodCounter: 0,
-  ratingCounter: 0,
-  editMethod: (name, data) =>
-    set((state) => {
-      return {
-        methods: state.methods.map((item) =>
-          item.name == name ? { ...item, ...data } : item
-        ),
-      };
-    }),
-  editRating: (name, data) =>
-    set((state) => {
-      return {
-        ratings: state.ratings.map((item) =>
-          item.name == name ? { ...item, ...data } : item
-        ),
-      };
-    }),
-  saveMethod: (data) => {
-    set((state) => {
-      return {
-        methods: [...state.methods, data],
-        // Increment the counter (used for id genration)
-        methodCounter: state.methodCounter + 1,
-      };
-    });
-  },
-  saveRating(data) {
-    set((state) => {
-      return {
-        ratings: [...state.ratings, data],
-        // Increment the counter (used for id genration)
-        ratingCounter: state.ratingCounter + 1,
-      };
-    });
-  },
-  reset: () =>
-    set(() => {
-      return { methods: [], ratings: [] };
-    }),
-  restoreFromLocalStorage: () =>
-    set((state) => {
-      try {
-        // TODO: Restore from local storage
-        const dataString = localStorage.getItem(LocalStorageKey);
-        if (!dataString) {
+const useRootStore = create<RootState>()(
+  devtools((set) => ({
+    methods: [],
+    ratings: [],
+    methodCounter: 0,
+    ratingCounter: 0,
+    editMethod: (name, data) =>
+      set((state) => {
+        return {
+          methods: state.methods.map((item) =>
+            item.name == name ? { ...item, ...data } : item
+          ),
+        };
+      }),
+    editRating: (name, data) =>
+      set((state) => {
+        return {
+          ratings: state.ratings.map((item) =>
+            item.name == name ? { ...item, ...data } : item
+          ),
+        };
+      }),
+    saveMethod: (data) => {
+      set((state) => {
+        return {
+          methods: [...state.methods, data],
+          // Increment the counter (used for id genration)
+          methodCounter: state.methodCounter + 1,
+        };
+      });
+    },
+    saveRating(data) {
+      set((state) => {
+        return {
+          ratings: [...state.ratings, data],
+          // Increment the counter (used for id genration)
+          ratingCounter: state.ratingCounter + 1,
+        };
+      });
+    },
+    reset: () =>
+      set(() => {
+        return { methods: [], ratings: [] };
+      }),
+    restoreFromLocalStorage: () =>
+      set((state) => {
+        try {
+          // TODO: Restore from local storage
+          const dataString = localStorage.getItem(LocalStorageKey);
+          if (!dataString) {
+            return state;
+          }
+          const { methods, ratings, ratingCounter, methodCounter } = JSON.parse(
+            dataString
+          ) as Partial<RootState>;
+          return { methods, ratings, ratingCounter, methodCounter };
+        } catch (error) {
+          console.error("Error while restoring from Local storage");
           return state;
         }
-        const { methods, ratings, ratingCounter, methodCounter } = JSON.parse(
-          dataString
-        ) as Partial<RootState>;
-        return { methods, ratings, ratingCounter, methodCounter };
-      } catch (error) {
-        console.error("Error while restoring from Local storage");
+      }),
+    saveToLocalStorage: () =>
+      set((state) => {
+        const { methods, ratings } = state;
+        localStorage.setItem(
+          LocalStorageKey,
+          JSON.stringify({ methods, ratings })
+        );
         return state;
-      }
-    }),
-  saveToLocalStorage: () =>
-    set((state) => {
-      const { methods, ratings } = state;
-      localStorage.setItem(
-        LocalStorageKey,
-        JSON.stringify({ methods, ratings })
-      );
-      return state;
-    }),
-  // draftMethod: {
-  //   name: "Untited",
-  //   criteria: [
-  //     {
-  //       name: "Default",
-  //       weight: 100,
-  //     },
-  //   ],
-  // },
-  // updateDraftMethodCriterion: (criterion) =>
-  //   set((state) => {
-  //     if (typeof state.draftMethod !== "undefined") {
-  //       return {
-  //         draftMethod: {
-  //           ...state.draftMethod,
-  //           criteria: state.draftMethod?.criteria.map((item) =>
-  //             item.name === criterion.name ? { ...item, ...criterion } : item
-  //           ),
-  //         },
-  //       };
-  //     } else {
-  //       return state;
-  //     }
-  //   }),
-  // updateDraftName: (name) => {
-  //   set((state) => {
-  //     if (typeof state.draft !== "undefined") {
-  //       return { draft: { ...state.draft, name } };
-  //     } else {
-  //       return state;
-  //     }
-  //   });
-  // },
-  // saveDraftMethod: (method) =>
-  //   set((state) => {
-  //     return { methods: [...state.methods, method] };
-  //   }),
-}));
+      }),
+    // draftMethod: {
+    //   name: "Untited",
+    //   criteria: [
+    //     {
+    //       name: "Default",
+    //       weight: 100,
+    //     },
+    //   ],
+    // },
+    // updateDraftMethodCriterion: (criterion) =>
+    //   set((state) => {
+    //     if (typeof state.draftMethod !== "undefined") {
+    //       return {
+    //         draftMethod: {
+    //           ...state.draftMethod,
+    //           criteria: state.draftMethod?.criteria.map((item) =>
+    //             item.name === criterion.name ? { ...item, ...criterion } : item
+    //           ),
+    //         },
+    //       };
+    //     } else {
+    //       return state;
+    //     }
+    //   }),
+    // updateDraftName: (name) => {
+    //   set((state) => {
+    //     if (typeof state.draft !== "undefined") {
+    //       return { draft: { ...state.draft, name } };
+    //     } else {
+    //       return state;
+    //     }
+    //   });
+    // },
+    // saveDraftMethod: (method) =>
+    //   set((state) => {
+    //     return { methods: [...state.methods, method] };
+    //   }),
+  }))
+);
 
 export default useRootStore;
