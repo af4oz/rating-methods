@@ -11,14 +11,14 @@ let criterioncount = 0;
  * /rating/new
  * <CreateRating>
  *
- * /rating/new?apply=methodId
- * <CreateRating applyMethod="" />
+ * /rating/new?applyMethodId=methodId
+ * <CreateRating applyMethodId="" />
  *
- * /rating/new?fork=ratingId
- * <CreateRating forkRating="" />
+ * /rating/new?forkRatingId=ratingId
+ * <CreateRating forkRatingId="" />
  *
  * /rating/edit/[id]
- * <CreateRating edit="1"/>
+ * <CreateRating editRatingId="1"/>
  */
 export default function CreateRating({
   applyMethodId,
@@ -39,6 +39,7 @@ export default function CreateRating({
 
   const initRating = (): T_Rating => {
     if (applyMethodId) {
+      // Initial state of a rating when fork/edit/apply buttons pressed on /method/new or /method/[id] pages
       const method = store.methods.find((item) =>
         idEqual(item.id, applyMethodId)
       );
@@ -52,6 +53,7 @@ export default function CreateRating({
         criteria: method.criteria.map((item) => ({ ...item, value: 0 })),
       };
     } else if (forkRatingId || editRatingId) {
+      // Initial state of a rating when fork/edit buttons pressed on /rating/[id] pages
       const rating = store.ratings.find((item) =>
         idEqual(item.id, (forkRatingId || editRatingId) as number)
       );
@@ -61,10 +63,11 @@ export default function CreateRating({
       }
       return {
         id: getId(),
-        name: "Untited",
+        name: forkRatingId ? "Untited" : rating.name,
         criteria: rating.criteria,
       };
     } else {
+      // Initial state of a new rating
       return {
         id: getId(),
         name: "Untited",
@@ -177,7 +180,7 @@ export default function CreateRating({
   return (
     <div>
       <h1 className="h1">{rating.name}</h1>
-      {error && <div className="text-red-600">Error: {error}</div>}
+      {error ? <div className="text-red-600">Error: {error}</div> : null}
       <table>
         <thead>
           <tr>

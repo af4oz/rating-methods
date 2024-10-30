@@ -22,7 +22,7 @@ export default function ViewRating() {
   return (
     <div>
       <div className="flex justify-between">
-        <h1 className="h1">{rating.name}</h1>
+        <h1 className="h1">Rating Name: {rating.name}</h1>
         <div>
           <button className="btn-primary mr-4" onClick={handleEdit}>
             Edit 📝
@@ -56,6 +56,13 @@ export default function ViewRating() {
           ))}
         </tbody>
       </table>
+      <br />
+      <br />
+      {rating.finalRating ? (
+        <div>
+          <b>Final Rating: </b> {rating.finalRating}
+        </div>
+      ) : null}
     </div>
   );
 }
