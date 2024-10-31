@@ -1,7 +1,7 @@
 import CriterionTableRow from "@/components/CriterionTableRow";
 import useRootStore from "@/store";
 import { CreateMethodProps, CriterionProps, T_RatingMethod } from "@/types";
-import { hasValidWeights, idEqual } from "@/utils/common";
+import { hasValidWeights } from "@/utils/common";
 import { useRouter } from "next/router";
 import { useId, useState } from "react";
 
