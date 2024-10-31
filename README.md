@@ -18,9 +18,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## TODO Items
 
+- [x] LocalStorage functionality not working in production
 - [ ] Name input functionality, let users save Ratings/Methods with unique names
 - [ ] When applying method to a rating, remove "addCriterion" button
-- [ ] Add ErrorBoundary 
+- [ ] Add ErrorBoundary
 - [ ] Display Ratings using particular method on method/[id] pages
 - [ ] Add creation & modification datetime
 - [ ] Improve id counters
