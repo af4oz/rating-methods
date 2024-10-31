@@ -44,6 +44,6 @@ export interface CreateRatingProps {
   editRating?: T_Rating;
 }
 export interface CreateMethodProps {
-  forkMethodId?: T_RatingMethod["id"];
-  editMethodId?: T_RatingMethod["id"];
+  forkMethod?: T_RatingMethod;
+  editMethod?: T_RatingMethod;
 }

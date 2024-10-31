@@ -11,39 +11,30 @@ let criterioncount = 0;
  * /method/new
  * <CreateMethod>
  *
- * /method/new?forkMethodId=methodId
- * <CreateMethod forkMethodId="" />
+ * /method/new?forkMethod=methodId
+ * <CreateMethod forkMethod="" />
  *
  * /method/edit/[id]
- * <CreateMethod editMethodId="1"/>
+ * <CreateMethod editMethod="1"/>
  */
 export default function CreateMethod({
-  forkMethodId,
-  editMethodId,
+  forkMethod,
+  editMethod,
 }: CreateMethodProps) {
   const id = useId();
   const [error, setError] = useState("");
   const store = useRootStore();
   const router = useRouter();
 
-  const getId = () => {
-    if (editMethodId) return editMethodId;
-    else return store.methodCounter;
-  };
-
   const initRating = (): T_RatingMethod => {
-    if (editMethodId || forkMethodId) {
-      // Initial state of a method when edit buttons pressed on /method/[id] pages
-      const method = store.methods.find((item) =>
-        idEqual(item.id, (forkMethodId || editMethodId) as number)
-      );
-      if (!method) {
-        throw new Error("Method not found");
-      }
+    if (editMethod) {
+      // Initial state of a method when edit button pressed on /method/[id] pages
+      return editMethod;
+    } else if (forkMethod) {
+      // Initial state of a method when fork button pressed on /method/[id] pages
       return {
-        id: getId(),
-        name: method.name,
-        criteria: method.criteria,
+        ...forkMethod,
+        id: store.methodCounter,
       };
     } else {
       // Initial state of a new method
@@ -112,8 +103,8 @@ export default function CreateMethod({
 
     // Save/edit method to store
     const data = { ...method, criteria: formattedCriteria };
-    if (editMethodId) {
-      store.editMethod(editMethodId, data);
+    if (editMethod) {
+      store.editMethod(editMethod.id, data);
     } else {
       store.saveMethod(data);
     }
