@@ -1,11 +1,20 @@
 import CreateMethod from "@/components/CreateMethod";
+import useRootStore from "@/store";
+import { idEqual } from "@/utils/common";
 import { useRouter } from "next/router";
 
 export default function NewMethod() {
   const router = useRouter();
-  const editMethodId = Number(router.query.editMethodId);
+  const store = useRootStore();
+
   const forkMethodId = Number(router.query.forkMethodId);
-  return (
-    <CreateMethod editMethodId={editMethodId} forkMethodId={forkMethodId} />
-  );
+  if (!Number.isNaN(forkMethodId)) {
+    const method = store.methods.find((item) => idEqual(item.id, forkMethodId));
+    if (!method) {
+      return <div>Method not found with id: {forkMethodId}</div>;
+    }
+    return <CreateMethod forkMethod={method} />;
+  }
+
+  return <CreateMethod />;
 }

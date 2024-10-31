@@ -39,11 +39,11 @@ export interface CriterionProps<
 }
 
 export interface CreateRatingProps {
-  applyMethodId?: T_RatingMethod["id"];
-  forkRatingId?: T_Rating["id"];
-  editRatingId?: T_Rating["id"];
+  applyMethod?: T_RatingMethod;
+  forkRating?: T_Rating;
+  editRating?: T_Rating;
 }
 export interface CreateMethodProps {
-  forkMethodId?: T_RatingMethod["id"];
-  editMethodId?: T_RatingMethod["id"];
+  forkMethod?: T_RatingMethod;
+  editMethod?: T_RatingMethod;
 }

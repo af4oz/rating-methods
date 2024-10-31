@@ -11,19 +11,19 @@ let criterioncount = 0;
  * /rating/new
  * <CreateRating>
  *
- * /rating/new?applyMethodId=methodId
- * <CreateRating applyMethodId="" />
+ * /rating/new?applyMethod=methodId
+ * <CreateRating applyMethod="" />
  *
- * /rating/new?forkRatingId=ratingId
- * <CreateRating forkRatingId="" />
+ * /rating/new?forkRating=ratingId
+ * <CreateRating forkRating="" />
  *
  * /rating/edit/[id]
- * <CreateRating editRatingId="1"/>
+ * <CreateRating editRating="1"/>
  */
 export default function CreateRating({
-  applyMethodId,
-  forkRatingId,
-  editRatingId,
+  applyMethod,
+  forkRating,
+  editRating,
 }: CreateRatingProps) {
   const id = useId();
   const [error, setError] = useState("");
@@ -31,46 +31,29 @@ export default function CreateRating({
   const store = useRootStore();
   const router = useRouter();
 
-  const getId = () => {
-    if (applyMethodId || forkRatingId) return store.ratingCounter;
-    else if (editRatingId) return editRatingId;
-    else return store.ratingCounter;
-  };
-
   const initRating = (): T_Rating => {
-    if (applyMethodId) {
+    if (applyMethod) {
       // Initial state of a rating when fork/edit/apply buttons pressed on /method/new or /method/[id] pages
-      const method = store.methods.find((item) =>
-        idEqual(item.id, applyMethodId)
-      );
-      if (!method) {
-        throw new Error("Method not found");
-      }
       return {
-        id: getId(),
-        name: "Untited",
-        method: { id: method.id, name: method.name },
-        criteria: method.criteria.map((item) => ({ ...item, value: 0 })),
+        id: store.ratingCounter,
+        name: "Untitled",
+        method: { id: applyMethod.id, name: applyMethod.name },
+        criteria: applyMethod.criteria.map((item) => ({ ...item, value: 0 })),
       };
-    } else if (forkRatingId || editRatingId) {
+    } else if (editRating) {
+      return editRating;
+    } else if (forkRating) {
       // Initial state of a rating when fork/edit buttons pressed on /rating/[id] pages
-      const rating = store.ratings.find((item) =>
-        idEqual(item.id, (forkRatingId || editRatingId) as number)
-      );
-
-      if (!rating) {
-        throw new Error("Rating not found");
-      }
       return {
-        id: getId(),
-        name: forkRatingId ? "Untited" : rating.name,
-        criteria: rating.criteria,
+        id: store.ratingCounter,
+        name: "Untitled",
+        criteria: forkRating.criteria,
       };
     } else {
       // Initial state of a new rating
       return {
-        id: getId(),
-        name: "Untited",
+        id: store.ratingCounter,
+        name: "Untitled",
         criteria: [
           {
             id: id + ++criterioncount,
@@ -167,8 +150,8 @@ export default function CreateRating({
 
     // Save/edit rating to store
     const data = { ...rating, criteria: formattedCriteria, finalRating };
-    if (editRatingId) {
-      store.editRating(editRatingId, data);
+    if (editRating) {
+      store.editRating(editRating.id, data);
     } else {
       store.saveRating(data);
     }
