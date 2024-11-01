@@ -23,7 +23,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install chromium # using chromium for now to save energy
       - name: Run Playwright tests
-        run: npx playwright test --only-changed=$GITHUB_BASE_REF
+        # See https://playwright.dev/docs/ci#fail-fast
+        run: npx playwright test --only-changed=origin/$GITHUB_BASE_REF
         if: github.event_name == 'pull_request'
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
