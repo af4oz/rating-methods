@@ -3,7 +3,6 @@ name: Playwright tests on Github pages deployment URL
 on:
   push:
     branches: ["main"]
-    branches-ignore: ["docs"]
   deployment_status:
 jobs:
   test:
@@ -20,6 +19,6 @@ jobs:
       - name: Install Playwright
         run: npx playwright install chromium # using chromium for now to save energy
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --fail-on-flaky-tests
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
