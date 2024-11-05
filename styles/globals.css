@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "@radix-ui/colors/black-alpha.css";
+@import "@radix-ui/colors/mauve.css";
+@import "@radix-ui/colors/violet.css";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -43,4 +47,8 @@ input {
   .link {
     @apply text-blue-500 hover:text-blue-400
   }
+}
+
+input:invalid {
+  outline: 2px solid red;
 }

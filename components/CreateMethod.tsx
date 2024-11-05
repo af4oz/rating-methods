@@ -1,9 +1,11 @@
 import CriterionTableRow from "@/components/CriterionTableRow";
+import { MethodNameSettings } from "@/constants";
 import useRootStore from "@/store";
 import { CreateMethodProps, CriterionProps, T_RatingMethod } from "@/types";
-import { hasValidWeights } from "@/utils/common";
+import { formatCriteria, hasValidWeights } from "@/utils/common";
 import { useRouter } from "next/router";
-import { useId, useState } from "react";
+import { ChangeEventHandler, useId, useRef, useState } from "react";
+import RM_Dialog from "./RM_Dialog";
 
 let criterioncount = 0;
 /**
@@ -12,10 +14,10 @@ let criterioncount = 0;
  * <CreateMethod>
  *
  * /method/new?forkMethod=methodId
- * <CreateMethod forkMethod="" />
+ * <CreateMethod forkMethod={methodId} />
  *
  * /method/edit/[id]
- * <CreateMethod editMethod="1"/>
+ * <CreateMethod editMethod={methodId}/>
  */
 export default function CreateMethod({
   forkMethod,
@@ -25,6 +27,8 @@ export default function CreateMethod({
   const [error, setError] = useState("");
   const store = useRootStore();
   const router = useRouter();
+  const [methodName, setMethodName] = useState("");
+  const [open, setOpen] = useState(false);
 
   const initRating = (): T_RatingMethod => {
     if (editMethod) {
@@ -63,6 +67,12 @@ export default function CreateMethod({
     }));
   };
 
+  const methodNameInput = useRef<HTMLInputElement | null>(null);
+  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    methodNameInput.current?.reportValidity();
+    setMethodName(e.target.value);
+  };
+
   const handleDelete: CriterionProps["onDelete"] = (deletedItem) => {
     setMethod((m) => ({
       ...m,
@@ -84,15 +94,11 @@ export default function CreateMethod({
       ],
     }));
   };
-  const handleSave = () => {
+  const handleEdit = () => {
     // Reset Error state
     setError("");
 
-    // Data formatting TODO: (remove duplicated work)
-    const formattedCriteria = method.criteria.map((item) => ({
-      ...item,
-      weight: Number(item.weight),
-    }));
+    const formattedCriteria = formatCriteria(method.criteria);
 
     // Verification
     // 1. All weights summed should be equal to 100
@@ -103,11 +109,47 @@ export default function CreateMethod({
 
     // Save/edit method to store
     const data = { ...method, criteria: formattedCriteria };
-    if (editMethod) {
-      store.editMethod(editMethod.id, data);
-    } else {
-      store.saveMethod(data);
+    store.editMethod(editMethod!.id, data);
+
+    // Route back to home
+    router.push("/");
+  };
+
+  const handleSave = () => {
+    // Reset Error state
+    setError("");
+
+    // TODO: remove the need for formatCriteria
+    const formattedCriteria = formatCriteria(method.criteria);
+
+    // Verification
+    // 1. All weights summed should be equal to 100
+    if (!hasValidWeights(formattedCriteria)) {
+      setError("All weights summed should be equal to 100");
+      return;
     }
+    // Show Rating Name input dialog
+    setOpen(true);
+  };
+  const handleSaveMethodAs = () => {
+    const valid = methodNameInput.current?.reportValidity();
+    if (!valid) {
+      return;
+    }
+
+    // TODO: remove the need for formatCriteria
+    const formattedCriteria = formatCriteria(method.criteria);
+    const data = {
+      ...method,
+      name: methodName,
+      criteria: formattedCriteria,
+    } as T_RatingMethod;
+
+    // Save newly created rating with name
+    store.saveMethod(data);
+
+    // Close the dialog
+    setOpen(false);
 
     // Route back to home
     router.push("/");
@@ -122,7 +164,7 @@ export default function CreateMethod({
 
   return (
     <div>
-      <h1 className="h1">{method.name}</h1>
+      <h1 className="h1">Create a new rating method</h1>
       {error ? <div className="text-red-600">Error: {error}</div> : null}
       <table>
         <thead>
@@ -153,13 +195,47 @@ export default function CreateMethod({
       <br />
       <br />
       <div>
-        <button onClick={handleSave} className="btn-primary mr-4">
-          Save method
-        </button>
+        {editMethod ? (
+          <button onClick={handleEdit} className="btn-primary mr-4">
+            Save edit
+          </button>
+        ) : (
+          <button onClick={handleSave} className="btn-primary mr-4">
+            Save
+          </button>
+        )}
         <button onClick={handleSaveAndApply} className="btn-primary">
           Save & Apply
         </button>
       </div>
+      <RM_Dialog
+        open={open}
+        title="Save Method as"
+        onOpenChange={setOpen}
+        description="It gets easy for you later to manage the methods that you've created."
+      >
+        <div>
+          <input
+            ref={methodNameInput}
+            id="method-name"
+            type="text"
+            name="method-name"
+            required
+            minLength={MethodNameSettings.min}
+            maxLength={MethodNameSettings.max}
+            value={methodName}
+            onInput={handleNameChange}
+            placeholder="Enter a name"
+            autoComplete="off"
+          />
+
+          <div className="flex mt-4 justify-end">
+            <button className="btn-primary" onClick={handleSaveMethodAs}>
+              Save
+            </button>
+          </div>
+        </div>
+      </RM_Dialog>
     </div>
   );
 }

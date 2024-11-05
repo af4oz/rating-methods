@@ -1,4 +1,4 @@
-import { T_Criterion } from "@/types";
+import { T_Criterion, T_Rating, T_RatingMethod } from "@/types";
 
 export function uuidv4(): string {
   // @ts-ignore
@@ -30,4 +30,17 @@ export function hasValidWeights(criteria: T_Criterion[]): boolean {
 
 export function idEqual(id1: string | number, id2: string | number) {
   return String(id1) === String(id2);
+}
+
+export function formatCriteria(
+  criteria: T_Rating["criteria"]
+): T_Rating["criteria"];
+export function formatCriteria(
+  criteria: T_RatingMethod["criteria"]
+): T_RatingMethod["criteria"];
+export function formatCriteria(criteria: any): any {
+  return criteria.map((item: { weight: string }) => ({
+    ...item,
+    weight: Number(item.weight),
+  }));
 }

@@ -19,7 +19,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## TODO Items
 
 - [x] LocalStorage functionality not working in production
-- [ ] Name input functionality, let users save Ratings/Methods with unique names
+- Fix error
+  1. create a rating, then navigate to that rating view(rating/[id]) page
+  2. refresh(Cmd + r), see dev console for id mismatch error:w
+- [ ] Improve e2e testing(eg: adding testid where necessary, Improve code & readability, etc) and fix errors
+- [x] Name input functionality, let users save Ratings/Methods with unique names
 - [ ] When applying method to a rating, remove "addCriterion" button
 - [ ] Add ErrorBoundary
 - [ ] Display Ratings using particular method on method/[id] pages
