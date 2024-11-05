@@ -1,5 +1,10 @@
+import {
+  CriterionNameSettings,
+  CriterionRatingSettings,
+  CriterionWeightSettings,
+} from "@/constants";
 import { CriterionProps, T_CriterionWithValue } from "@/types";
-import { ChangeEventHandler } from "react";
+import { ChangeEventHandler, useRef } from "react";
 
 export default function CriterionTableRow<Type extends "withValue" | undefined>(
   props: CriterionProps<Type>
@@ -7,12 +12,18 @@ export default function CriterionTableRow<Type extends "withValue" | undefined>(
   const { criterion } = props;
   const idForWeightInput = criterion.id + "-weight";
   const idForNameInput = criterion.id + "-name";
+  const nameInput = useRef<HTMLInputElement | null>(null);
+  const weighInput = useRef<HTMLInputElement | null>(null);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    nameInput.current?.reportValidity();
+    weighInput.current?.reportValidity();
+
     const updatedCriterion = {
       ...criterion,
       [e.target.name]: e.target.value,
     };
+
     props.onChange(updatedCriterion);
   };
 
@@ -23,28 +34,33 @@ export default function CriterionTableRow<Type extends "withValue" | undefined>(
     <tr className="p-2 my-2">
       <td className="pr-4 py-2">
         <input
+          ref={nameInput}
           id={idForNameInput}
           type="text"
           name="name"
-          min={1}
-          max={120}
+          min={CriterionNameSettings.min}
+          max={CriterionNameSettings.max}
           value={criterion.name}
           onInput={onChange}
+          required
+          data-testid="criterion-name"
         ></input>
         {/* <label htmlFor={id}>{props.criterion.name}</label> */}
       </td>
       <td className="pr-4 py-2">
         <input
+          ref={weighInput}
           type="number"
           id={idForWeightInput}
           name="weight"
-          min={0}
+          min={CriterionWeightSettings.min}
           placeholder="0"
-          max={100}
-          step={1}
+          max={CriterionWeightSettings.max}
+          step={CriterionWeightSettings.step}
           value={criterion.weight}
           onInput={onChange}
-          // disabled={!editable}
+          required
+          data-testid="criterion-weight"
         />
       </td>
       {props.type === "withValue" ? (
@@ -54,13 +70,14 @@ export default function CriterionTableRow<Type extends "withValue" | undefined>(
             type="range"
             id={criterion.id + "-value"}
             name="value"
-            min="0"
-            max={10}
+            min={CriterionRatingSettings.min}
+            max={CriterionRatingSettings.max}
             value={(criterion as T_CriterionWithValue).value}
-            step={1}
+            step={CriterionRatingSettings.step}
             onChange={onChange}
             list="markers"
-            // disabled={!editable}
+            required
+            data-testid="criterion-rating"
           />
         </td>
       ) : null}

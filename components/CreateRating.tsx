@@ -1,9 +1,11 @@
 import CriterionTableRow from "@/components/CriterionTableRow";
+import { RatingNameSettings } from "@/constants";
 import useRootStore from "@/store";
 import { CreateRatingProps, CriterionProps, T_Rating } from "@/types";
-import { hasValidWeights } from "@/utils/common";
+import { formatCriteria, hasValidWeights } from "@/utils/common";
 import { useRouter } from "next/router";
-import { useId, useState } from "react";
+import { ChangeEventHandler, useId, useRef, useState } from "react";
+import RM_Dialog from "./RM_Dialog";
 
 let criterioncount = 0;
 /**
@@ -12,13 +14,13 @@ let criterioncount = 0;
  * <CreateRating>
  *
  * /rating/new?applyMethod=methodId
- * <CreateRating applyMethod="" />
+ * <CreateRating applyMethod={methodId} />
  *
  * /rating/new?forkRating=ratingId
- * <CreateRating forkRating="" />
+ * <CreateRating forkRating={ratingId} />
  *
  * /rating/edit/[id]
- * <CreateRating editRating="1"/>
+ * <CreateRating editRating={ratingId} />
  */
 export default function CreateRating({
   applyMethod,
@@ -30,6 +32,8 @@ export default function CreateRating({
   const [finalRating, setFinalRating] = useState(NaN);
   const store = useRootStore();
   const router = useRouter();
+  const [ratingName, setRatingName] = useState("");
+  const [open, setOpen] = useState(false);
 
   const initRating = (): T_Rating => {
     if (applyMethod) {
@@ -93,6 +97,12 @@ export default function CreateRating({
     }));
   };
 
+  const ratingNameInput = useRef<HTMLInputElement | null>(null);
+  const handleNameChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    ratingNameInput.current?.reportValidity();
+    setRatingName(e.target.value);
+  };
+
   const handleDelete: CriterionProps["onDelete"] = (deletedItem) => {
     setRating((r) => ({
       ...r,
@@ -131,15 +141,12 @@ export default function CreateRating({
     setFinalRating(Math.round(finalRating * 100) / 100);
   };
 
-  const handleSave = () => {
+  const handleEdit = () => {
     // Reset Error state
     setError("");
 
-    // Data formatting TODO: (remove duplicated work)
-    const formattedCriteria = rating.criteria.map((item) => ({
-      ...item,
-      weight: Number(item.weight),
-    }));
+    // TODO: remove the need for formatCriteria
+    const formattedCriteria = formatCriteria(rating.criteria);
 
     // Verification
     // 1. All weights summed should be equal to 100
@@ -150,11 +157,49 @@ export default function CreateRating({
 
     // Save/edit rating to store
     const data = { ...rating, criteria: formattedCriteria, finalRating };
-    if (editRating) {
-      store.editRating(editRating.id, data);
-    } else {
-      store.saveRating(data);
+    store.editRating(editRating!.id, data);
+
+    // Route back to home
+    router.push("/");
+  };
+
+  const handleSave = () => {
+    // Reset Error state
+    setError("");
+
+    // TODO: remove the need for formatCriteria
+    const formattedCriteria = formatCriteria(rating.criteria);
+
+    // Verification
+    // 1. All weights summed should be equal to 100
+    if (!hasValidWeights(formattedCriteria)) {
+      setError("All weights summed should be equal to 100");
+      return;
     }
+    // Show Rating Name input dialog
+    setOpen(true);
+  };
+
+  const handleSaveRatingAs = () => {
+    const valid = ratingNameInput.current?.reportValidity();
+    if (!valid) {
+      return;
+    }
+
+    // TODO: remove the need for formatCriteria
+    const formattedCriteria = formatCriteria(rating.criteria);
+    const data = {
+      ...rating,
+      name: ratingName,
+      criteria: formattedCriteria,
+      finalRating,
+    } as T_Rating;
+
+    // Save newly created rating with name
+    store.saveRating(data);
+
+    // Close the dialog
+    setOpen(false);
 
     // Route back to home
     router.push("/");
@@ -162,7 +207,7 @@ export default function CreateRating({
 
   return (
     <div>
-      <h1 className="h1">{rating.name}</h1>
+      <h1 className="h1">Create new rating</h1>
       {error ? <div className="text-red-600">Error: {error}</div> : null}
       <table>
         <thead>
@@ -196,17 +241,53 @@ export default function CreateRating({
       </button>
       <br />
       <br />
-      <b>Final Rating:</b> {finalRating}
+      <div data-testid="final-rating">
+        <b>Final Rating:</b> {finalRating}
+      </div>
       <br />
       <br />
       <div>
         <button onClick={handleCalculate} className="btn-primary mr-4">
           Calculate
         </button>
-        <button onClick={handleSave} className="btn-primary">
-          Save
-        </button>
+        {editRating ? (
+          <button onClick={handleEdit} className="btn-primary">
+            Save edit
+          </button>
+        ) : (
+          <button onClick={handleSave} className="btn-primary">
+            Save
+          </button>
+        )}
       </div>
+      <RM_Dialog
+        open={open}
+        title="Save Rating as"
+        onOpenChange={setOpen}
+        description="It gets easy for you later to manage the ratings that you've created."
+      >
+        <div>
+          <input
+            ref={ratingNameInput}
+            id="rating-name"
+            type="text"
+            name="rating-name"
+            required
+            minLength={RatingNameSettings.min}
+            maxLength={RatingNameSettings.max}
+            value={ratingName}
+            onInput={handleNameChange}
+            placeholder="Enter a name"
+            autoComplete="off"
+          />
+
+          <div className="flex mt-4 justify-end">
+            <button className="btn-primary" onClick={handleSaveRatingAs}>
+              Save
+            </button>
+          </div>
+        </div>
+      </RM_Dialog>
     </div>
   );
 }

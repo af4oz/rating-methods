@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+
 export interface T_RatingMethod {
   id: number;
   name: string;
@@ -46,4 +48,12 @@ export interface CreateRatingProps {
 export interface CreateMethodProps {
   forkMethod?: T_RatingMethod;
   editMethod?: T_RatingMethod;
+}
+
+export interface RM_DialogProps {
+  title: string;
+  description?: string;
+  children: ReactElement;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
